@@ -1,27 +1,39 @@
 from ImportStockData import ReadStockData, StockDailyData
 from NeuronMultiDayPrice import NeuronMultiDayPrice
 import numpy as np
+import pandas as pd
+import json
+from matplotlib import pyplot as plt
 
 def main():
-    #create input list based on stock daily price info and volume
-    readdata = []
-    for daily, dailydetails in ReadStockData(jsonfile='applestock2024.json').items():
-        readdata.insert(0,StockDailyData(daily,dailydetails))
-    #create 1st level neuron daily stock  
-    numberofdays = 5; # the data in each neuron is calculated on numberofdays days stock daliy info
-    ListOfStockDailyData = readdata[0:((len(readdata)//numberofdays)*numberofdays)]
-    #create 2nd level neuron numberofdays days stock info
-    MultiDaysDate = []
-    for i in range(0, len(ListOfStockDailyData), numberofdays):
-        firstdate = ListOfStockDailyData[i].Date
-        prices = [item.CloseP for item in ListOfStockDailyData[i:(i+numberofdays)]]
-        meanprice = np.mean(prices)
-        stddeviation = np.std(prices, mean=meanprice)
-        MultiDaysDate.insert(0,NeuronMultiDayPrice(firstdate,meanprice,stddeviation))
+    #load stock data from json files
+    with open('applestock2024.json','r') as f:
+        dataraw = json.load(f)
+    #remove the meta data
+    data = dataraw["Time Series (Daily)"]
+    #create pandas dataframe
+    ReadDataRaw = pd.DataFrame(data)
+    #print(ReadDataRaw)
+    #transform the dataframe
+    StockData = pd.DataFrame(ReadDataRaw.T)
+    #print(StockData)
+
+    #reverse the  frame older date first
+    StockData = StockData.iloc[::-1]
+    StockData = StockData.reset_index() #otherwise the date is used as index    
+    StockData['4. close'] = StockData['4. close'].astype(float)
+
+    #Cal 5MA
+    StockData['MA5'] = StockData['4. close'].rolling(window=5).mean()    
+    #plt.plot(StockData.index,StockData['MA5'] )
+    #plt.show()
     
-    # print(close)
-        # ListOfStockDailyData.insert(NeuronMultiDayPrice(ListOfStockDailyData[i].Date,\
-        # ListOfStockDailyData[i:i+numberofdays-1]
+    #Cal Average
+    #StockData['5Days'] = StockData.index // 5
+
+    print(StockData.head())
+    StockData['5Days'] = StockData.groupby(StockData.index // 5)['4. close'].transform('mean')
+    print(StockData)
 
 
 if __name__ == "__main__": 
