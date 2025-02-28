@@ -1,9 +1,8 @@
-from ImportStockData import ReadStockData, StockDailyData
-from NeuronMultiDayPrice import NeuronMultiDayPrice
 import numpy as np
 import pandas as pd
 import json
 from matplotlib import pyplot as plt
+from sklearn.linear_model import LogisticRegression as LR
 
 def main():
     #load stock data from json files
@@ -29,11 +28,12 @@ def main():
     #plt.show()
     
     #Cal Average
-    #StockData['5Days'] = StockData.index // 5
+    StockData['5DaysIdx'] = StockData.index // 5
 
     print(StockData.head())
-    StockData['5Days'] = StockData.groupby(StockData.index // 5)['4. close'].transform('mean')
-    print(StockData)
+    FiveDaysAv = StockData.groupby('5DaysIdx')['4. close'].mean().reset_index()
+    FiveDaysAv = FiveDaysAv.rename(columns={'4. close': '5DaysAv'})
+    print(FiveDaysAv)
 
 
 if __name__ == "__main__": 
