@@ -1,3 +1,5 @@
 # work folder
 __pycache__/*
 .DS_Store
+*/dataset/*
+.ipynb_checkpoints/
