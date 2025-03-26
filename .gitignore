@@ -1,6 +1,11 @@
 # work folder
 __pycache__/*
 .DS_Store
+<<<<<<< HEAD
 */**/dataset/*
 .ipynb_checkpoints/
 */**/*.keras
+=======
+*/dataset/*
+.ipynb_checkpoints/
+>>>>>>> c3dd00bab97efbcbece390ca03b4651084eb7a82
