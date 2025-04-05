@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     #calculate the predicted price based on the NormedX
     PredNormedY = NormedLR.predict(NormedX) #*(y.max()-y.min()) + y.min()
-    print(y_pred-(PredNormedY)) #*(y.max()-y.min())+y.min()))
+    #print(y_pred-(PredNormedY)) #*(y.max()-y.min())+y.min()))
 
     #caclulation the error and r2 with normlized data
     Accuracy = mean_squared_error(y,PredNormedY)
