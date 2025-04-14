@@ -1,0 +1,15 @@
+# ML Essential Algorithms
+- Brief Introduction
+	- 
+- MLIrisDataSet
+	- This jupyter notebook uses the iris dataset for learning and practising typical ML algorithms of sample clustering and cataloguing
+		- 1. Decision Tree with entropy measure
+		- 2. As a, but the data are down sized with PCA 
+			- Standarize data (mean = 0, std = 1)
+			- Calculate the explained covariance by calling PCA with orginal number of features
+			- Create a new data frame with reduced data dimension            - 
+		- 3. KMeans (unsupervised learning) to clustering the data
+		- 4. KNN(K-Nearest-Neighbors) 
+		- 5. MeanShift (unsupervised learning)
+		- 6. Build a MLP(Multi-Layer Perceptron) with 2 Dense layers
+    - The method Decision Tree, KNN indicate the best results. The performance of the Decision Tree on the PCA processed data and MLP is little bit lower than the method a, d. The method c and e are unsupervised learning. In this way the performance of these are pretty poor.
