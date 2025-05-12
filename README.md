@@ -50,7 +50,7 @@
 	- Different number of vehicle signals are and number of neurone used to evaluate the ideal. Astonishing the standard 5 vehicle signals are sufficient to recognize the drive situation, refer MLClusterDrivingSiuationIdeal_00.ipynb
 
 - RNN
-	- A recurrent neural net is buit to forecast the apple stock price. In deed no body is able to get it. This is just an exercise to leran and understand the RNN. Pls don't take it as seriously.
+	- A recurrent neural net is buit to forecast the apple stock price. In deed no body is able to get it. This is just an exercise to learn and understand the RNN. Pls don't take it seriously.
 		1. Each data frame consists of close price of 20 days, the close price of 21th day shall be forecasted
 		2. The RNN (input layer with input size = 20 -> dense layer with 5 neurone -> output layer with output size = 1
 		3. On going ... test different ideal
