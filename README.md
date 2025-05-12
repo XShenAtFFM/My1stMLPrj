@@ -37,6 +37,25 @@
 		7. Dense layer with Relu
 		8. Output layer with sigmoid
 	-  In the EvaMy1stCnn the created CNN model is evaluated with test data set and fotos from internet.
+
+- NN4VehicleStateClustering
+	- We use different method to estimate vehicle signals, e.g. vehicle lateral velocity. Sometimes the estimated signals are out of the tolerance range. The roor cause for this is not clearly recognizable. In this folder a so called **auto encoder for classfication** neural net is implemented to classificate the drive situation. The ideal is to find it automatically out in which vehicle (driving) state the signal estimator performs poor particutly.
+		1. Use KMeans to cluster the drive situation. Number of clusters is determined with elbow curve methode
+		2. Create an simple auto encoder MLP net(input layer -> dense layer -> output layer). Each input data frame inludes till 9 vehicle signals, e.g. velocity, acceleration and till 100 samples pro signals.  
+		3. Train the model so that the input == output
+		4. Drop the output layer. 
+		5. Run prediction with the new model without the output layer. 
+		6. Use KMeans to cluster the prediciton results
+		7. Different criteries are used to evluate the clustering results
+	- Different number of vehicle signals are and number of neurone used to evaluate the ideal. Astonishing the standard 5 vehicle signals are sufficient to recognize the drive situation, refer MLClusterDrivingSiuationIdeal_00.ipynb
+
+- RNN
+	- A recurrent neural net is buit to forecast the apple stock price. In deed no body is able to get it. This is just an exercise to leran and understand the RNN. Pls don't take it as seriously.
+		1. Each data frame consists of close price of 20 days, the close price of 21th day shall be forecasted
+		2. The RNN (input layer with input size = 20 -> dense layer with 5 neurone -> output layer with output size = 1
+		3. On going ... test different ideal
+	- The plot shows obviously that the forcasted price is always behind the real price development, especially when the stock price trend changes
+
 - Exercise
 	- Coding examples with some essential machine learning algorithms
 		- Linear regression
