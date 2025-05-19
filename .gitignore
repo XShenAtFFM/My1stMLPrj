@@ -6,3 +6,6 @@ __pycache__/*
 */**/*.keras
 */**/*.png
 */**/expedia_train.csv
+
+.idea/**
+NN4VehicleStateClustering/vehicle_drinving_measurement.csv
