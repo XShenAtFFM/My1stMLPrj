@@ -63,3 +63,10 @@
 		- KMeans clsuter
 		- KNN
 		- MeanShift
+    - **Learning Pytorch** (LearningPytorch.ipynb)
+    	- Try out some pytorch tensor methods, e.g. torch.randn, torch.tensor.unfold, tensor_split.
+        <br></br>
+    	- Learning Pytroch Lightning data preparing
+          - Try out **Sampler methods to (random) sort and batch datasets
+          - Try out Dataloader method with a new created sub class of Dataset to load/iterate datasets, which is feed in the same way to the method training_step defined by the pytorch Lightning 
+          - Try out the methods pad_sequence and pack_padded_sequence ect. These methods are required by rnn and derivatives nets like LSTM to keep the train datasets having same length.
