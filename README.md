@@ -1,7 +1,14 @@
 # My First Machine Learning Project
 - Brief Introduction
-	- This repor is created to share my learning way of machine learning
-
+  - I created this repository to share my journey and approach to learning machine learning
+  and deep learning. It reflects my growing interest in these fields and the steps I've been taking to deepen my knowledge. I'm always open to connecting with others who are exploring similar topics
+  —or to new opportunities where I can apply what I've learned.
+  <br><br>
+- Current Work
+  - I'm currently working on a feature extraction task often referred to as an autocoder, aimed at estimating vehicle longitudinal and lateral velocity. 
+  The model architecture includes six layers with LSTM layers integrated in between, designed to capture temporal dependencies in the data. 
+  I'm building this using PyTorch Lightning—an entirely new framework for me—which has been a great learning experience.   
+<br>
 - MLIrisDataSet
 	- This jupyter notebook uses the iris dataset for learning and practising typical ML algorithms of sample clustering and cataloguing
 		- 1. Decision Tree with entropy measure
