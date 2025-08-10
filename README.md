@@ -3,25 +3,25 @@
   - I created this repository to share my journey and approach to learning machine learning
   and deep learning. It reflects my growing interest in these fields and the steps I've been taking to deepen my knowledge. I'm always open to connecting with others who are exploring similar topics
   —or to new opportunities where I can apply what I've learned.
-  <br><br>
+<br><br>
 - Current Work
   - I'm currently working on a feature extraction task often referred to as an autocoder, aimed at estimating vehicle longitudinal and lateral velocity. 
   The model architecture includes six layers with LSTM layers integrated in between, designed to capture temporal dependencies in the data. 
   I'm building this using PyTorch Lightning—an entirely new framework for me—which has been a great learning experience.   
-<br>
+<br><br>
 - MLIrisDataSet
-	- This jupyter notebook uses the iris dataset for learning and practising typical ML algorithms of sample clustering and cataloguing
-		- 1. Decision Tree with entropy measure
-		- 2. As a, but the data are down sized with PCA 
-			- Standarize data (mean = 0, std = 1)
-			- Calculate the explained covariance by calling PCA with orginal number of features
-			- Create a new data frame with reduced data dimension            - 
-		- 3. KMeans (unsupervised learning) to clustering the data
-		- 4. KNN(K-Nearest-Neighbors) 
-		- 5. MeanShift (unsupervised learning)
-		- 6. Build a MLP(Multi-Layer Perceptron) with 2 Dense layers
-    - The method Decision Tree, KNN indicate the best results. The performance of the Decision Tree on the PCA processed data and MLP is little bit lower than the method a, d. The method c and e are unsupervised learning. In this way the performance of these are pretty poor.
-
+  - This jupyter notebook uses the iris dataset for learning and practising typical ML algorithms of sample clustering and cataloguing
+  - 1. Decision Tree with entropy measure
+  - 2. As a, but the data are down sized with PCA 
+	- Standarize data (mean = 0, std = 1)
+	- Calculate the explained covariance by calling PCA with orginal number of features
+	- Create a new data frame with reduced data dimension            - 
+  - 3. KMeans (unsupervised learning) to clustering the data
+  - 4. KNN(K-Nearest-Neighbors) 
+  - 5. MeanShift (unsupervised learning)
+  - 6. Build a MLP(Multi-Layer Perceptron) with 2 Dense layers
+  - The method Decision Tree, KNN indicate the best results. The performance of the Decision Tree on the PCA processed data and MLP is little bit lower than the method a, d. The method c and e are unsupervised learning. In this way the performance of these are pretty poor.
+<br><br>
 - AnomalyDetection
 	- 5 different methods for anomlay detection are implemented in this jupyter notebook.
 		1) Calcuate the mean and standard deviation value, if some data are far away from the mean value
@@ -72,7 +72,6 @@
 		- MeanShift
     - **Learning Pytorch** (LearningPytorch.ipynb)
     	- Try out some pytorch tensor methods, e.g. torch.randn, torch.tensor.unfold, tensor_split.
-        <br></br>
     	- Learning Pytroch Lightning data preparing
           - Try out **Sampler methods to (random) sort and batch datasets
           - Try out Dataloader method with a new created sub class of Dataset to load/iterate datasets, which is feed in the same way to the method training_step defined by the pytorch Lightning 
