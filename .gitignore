@@ -6,6 +6,11 @@ __pycache__/*
 */**/*.keras
 */**/*.png
 */**/expedia_train.csv
-
+*/**/*.mf4
+*/***.log
 .idea/**
+*/**/lightning_logs/*
+*/**/*pycache*/*
+nocommit/*
 NN4VehicleStateClustering/vehicle_drinving_measurement.csv
+*/**/_standardizParam.json
