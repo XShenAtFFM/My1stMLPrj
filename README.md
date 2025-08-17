@@ -4,7 +4,7 @@
   and deep learning. It reflects my growing interest in these fields and the steps I've been taking to deepen my knowledge. I'm always open to connecting with others who are exploring similar topics
   —or to new opportunities where I can apply what I've learned.
 <br><br>
-- Current Work
+- Current Work: **Estimating vehicle longitudinal and lateral velocity**
   - I'm currently working on a feature extraction task often referred to as an autocoder, aimed at estimating vehicle longitudinal and lateral velocity. 
   The model architecture includes six layers with LSTM layers integrated in between, designed to capture temporal dependencies in the data. 
   I'm building this using PyTorch Lightning—an entirely new framework for me—which has been a great learning experience.   
