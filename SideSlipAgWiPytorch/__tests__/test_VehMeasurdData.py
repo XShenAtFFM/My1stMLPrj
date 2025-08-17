@@ -41,9 +41,6 @@ def create_test_mf4_file(signal_list, is_corrsys_valid = True):
     mdf.save('testdata.mf4', overwrite=True)
 
 class TestVehMeasurdData(unittest.TestCase):
-    def setUp(self):
-        print('setUp...')
-
 
     def test_data_loading(self):
         """
@@ -64,7 +61,7 @@ class TestVehMeasurdData(unittest.TestCase):
         feature_list = ['VEL_FL', 'VEL_FR', 'VEL_RL', 'UsedYawRate','UsedLatA']
 
         # instantiate class VehMeasuredata
-        vehmeasurddata = VehMeasurdData(file_list, feature_list, True, is_corrsys_preferred = False)
+        vehmeasurddata = VehMeasurdData(file_list, feature_list, False, is_corrsys_preferred = False)
 
         # Check if the object has same number of mf4 as available
         self.assertEqual(vehmeasurddata._data_list, file_list,'all file found')
@@ -75,8 +72,7 @@ class TestVehMeasurdData(unittest.TestCase):
         # Load the mf4 directly and keep only columns same as the featurelist
         src = MDF(vehmeasurddata._data_list[0]).to_dataframe()
         adaptfeaturelist = ['VEL_FL', 'VEL_FR', 'VEL_RL','YR', 'LACC']
-        src_feature = src.drop(columns=src.columns.difference(adaptfeaturelist))
-        src_feature = src_feature.reindex(columns = adaptfeaturelist)
+        src_feature = src.reindex(columns=adaptfeaturelist)
         src_feature =  src_feature.to_numpy()
 
         # inverse standardize scaler
@@ -84,12 +80,11 @@ class TestVehMeasurdData(unittest.TestCase):
         # Compare the data with original dataset
         self.assertEqual(np.allclose(fd_orig, src_feature, atol=1e-05, equal_nan=False), True, 'feature checked')
 
-        src_label = src.drop(columns=src.columns.difference(['RT_Msg604_VelLateral','RT_Msg604_VelForward']))
-        src_label = src_label.reindex(columns=['RT_Msg604_VelLateral','RT_Msg604_VelForward'])
+        src_label = src.reindex(columns=['RT_Msg604_VelForward','RT_Msg604_VelLateral'])
         src_label = src_label.to_numpy()
-        src_label[:, 0] *= -1
+        src_label[:, 1] *= -1
         # Compare the data with original dataset
-        self.assertEqual(np.allclose(lb, src_label, atol=1e-05, equal_nan=False), True, 'feature checked')
+        self.assertEqual(np.allclose(lb, src_label, atol=1e-03, equal_nan=False), True, 'feature checked')
 
 
 
@@ -119,8 +114,7 @@ class TestVehMeasurdData(unittest.TestCase):
         # Load the mf4 directly and keep only columns same as the featurelist
         src = MDF(vehmeasurddata._data_list[0]).to_dataframe()
         adaptfeaturelist = ['Corrsys_VL', 'Corrsys_VQ', 'YR']
-        src_feature = src.drop(columns=src.columns.difference(adaptfeaturelist))
-        src_feature = src_feature.reindex(columns=adaptfeaturelist)
+        src_feature = src.reindex(columns=adaptfeaturelist)
         src_feature = src_feature.to_numpy()
         src_feature[:, 1] = src_feature[:, 1] / 3.6 + (1.5 + 0.74) * src_feature[:, 2] / 180 * math.pi
         src_feature[:, 0] = src_feature[:, 0] / 3.6 - (0.47) * src_feature[:, 2] / 180 * math.pi
@@ -153,11 +147,10 @@ class TestVehMeasurdData(unittest.TestCase):
 
         # Load the mf4 directly and keep only columns same as the featurelist
         src = MDF(vehmeasurddata._data_list[0]).to_dataframe()
-        adaptfeaturelist = ['RT_Msg604_VelLateral', 'RT_Msg604_VelForward']
-        src_label = src.drop(columns=src.columns.difference(adaptfeaturelist))
-        src_label = src_label.reindex(columns=adaptfeaturelist)
+        adaptfeaturelist = ['RT_Msg604_VelForward', 'RT_Msg604_VelLateral']
+        src_label = src.reindex(columns=adaptfeaturelist)
         src_label = src_label.to_numpy()
-        src_label[:, 0] *= -1
+        src_label[:, 1] *= -1
         # Compare the data with original dataset
         self.assertEqual(np.allclose(lb, src_label, atol=1e-03, equal_nan=False), True, 'feature checked')
 

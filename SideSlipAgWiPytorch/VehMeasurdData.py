@@ -12,8 +12,9 @@ import math
 
 
 class VehMeasurdData(Dataset):
-    """A sub class of pytory dataset
-    Attributes
+    """
+    The VehMeasurdData is sub class of pytorch dataset
+    :attributes:
         _data_list: list, measurement mf4 file list
         _is_label_available: bool, shall give if the label is available in the measurement, not used now
         _lengths: length of found measurements
@@ -50,7 +51,7 @@ class VehMeasurdData(Dataset):
                                   'UsedYawRate': ['SSAInYawRate', 'YR', 'YawRate']}
 
         self._label_dictionary = {'Corrsys': ['Corrsys_VL', 'Corrsys_VQ'],
-                       'RtBox':['RT_Msg604_VelLateral', 'RT_Msg604_VelForward'],
+                       'RtBox':['RT_Msg604_VelForward', 'RT_Msg604_VelLateral'],
                        'CorrsysPreferred': is_corrsys_preferred }
 
         # Initial or new generation a StandardScaler
@@ -77,14 +78,14 @@ class VehMeasurdData(Dataset):
         var = np.array(params["var"])
 
         # Define a new StandardScaler object, configure it with load data
-        _standard_scaler = StandardScaler()
-        _standard_scaler.mean_ = mean
-        _standard_scaler.scale_ = scale
-        _standard_scaler.var_ = var
-        _standard_scaler.n_features_in_ = len(mean)
-        _standard_scaler.n_samples_seen_ = 1  # dummy value (not important unless partial_fit is used)
+        standard_scaler = StandardScaler()
+        standard_scaler.mean_ = mean
+        standard_scaler.scale_ = scale
+        standard_scaler.var_ = var
+        standard_scaler.n_features_in_ = len(mean)
+        standard_scaler.n_samples_seen_ = 1  # dummy value (not important unless partial_fit is used)
 
-        return _standard_scaler
+        return standard_scaler
 
 
     def _standardizing(self):
@@ -103,18 +104,18 @@ class VehMeasurdData(Dataset):
             data.append(feature.numpy())
         data = np.concatenate(data, axis=0)
         # Create Stan
-        _standard_scaler = StandardScaler()
-        _standard_scaler.fit(data)
-        print(f"mean: {list(self._standardizer.mean_)}")
-        print(f"scale: {list(self._standardizer.scale_)}")
-        print(f"var: {list(self._standardizer.var_)}")
+        standard_scaler = StandardScaler()
+        standard_scaler.fit(data)
+        print(f"mean: {list(standard_scaler.mean_)}")
+        print(f"scale: {list(standard_scaler.scale_)}")
+        print(f"var: {list(standard_scaler.var_)}")
 
         # Store the computed mean, scal and var value into a json file for reusing late on
-        params = {"mean": list(self._standardizer.mean_), "scal": list(self._standardizer.scale_), "var": list(self._standardizer.var_)}
+        params = {"mean": list(standard_scaler.mean_), "scal": list(standard_scaler.scale_), "var": list(standard_scaler.var_)}
         with open('_standardizParam.json', 'w') as f:
             json.dump(params, f)
 
-        return _standard_scaler
+        return standard_scaler
 
     def __getitem__(self, idx):
         """
@@ -148,19 +149,16 @@ class VehMeasurdData(Dataset):
         # Raise error if any feature/signal is unavailable
         if not all([self._pick_signal({renameto: signals.copy()}, feature_dataframe) for renameto, signals in picksignal_dictionary.items()]):
             raise Exception("Some feature signal is unavailable")
-
-        # Sort column according to the _feature
+        # Sort column according to the _feature and drop unnamed in the _features
         feature_dataframe = feature_dataframe.reindex(columns=self._features)
-
         # Pick correct label(reference signal) from dataframe
         # aise error if the label is unavailable
         label_dataframe = loaded_measurement
         # The yawrate is required for signal transforming
         label_dataframe['UsedYawRate'] = feature_dataframe['UsedYawRate']
-        label_available = self._build_label(label_dataframe)
-        if label_available is False:
+        label_available, label_dataframe = self._build_label(label_dataframe)
+        if label_available is not True:
             raise Exception("label is unavailable, pure prediction is unimplemented")
-
         return feature_dataframe.to_numpy(), label_dataframe.to_numpy()
 
     def _pick_signal(self, signal_dict, measurement_data_frame):
@@ -205,10 +203,10 @@ class VehMeasurdData(Dataset):
                 rtbox_avl = True
         # Drop unneeded columns in measurement_data_frame
         if self._label_dictionary['CorrsysPreferred'] and corrsys_avl:
-            measurement_data_frame.drop(columns=measurement_data_frame.columns.difference(self._label_dictionary['Corrsys']), inplace=True)
-            return True
+            measurement_data_frame = measurement_data_frame.reindex(columns=self._label_dictionary['Corrsys'])
+            return True, measurement_data_frame
         elif ~self._label_dictionary['CorrsysPreferred'] and rtbox_avl:
-            measurement_data_frame.drop(columns=measurement_data_frame.columns.difference(self._label_dictionary['RtBox']), inplace=True)
-            return True
+            measurement_data_frame = measurement_data_frame.reindex(columns=self._label_dictionary['RtBox'])
+            return True, measurement_data_frame
         else:
-            return None
+            return None, None
