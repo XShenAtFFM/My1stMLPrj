@@ -5,7 +5,8 @@
   —or to new opportunities where I can apply what I've learned.
 <br><br>
 - Current Work: **Deeply understand the deep learning core concept**
-  - I am reimplementing Andrew Ng’s deep learning exercises from scratch, ref the folder NNFromScratch
+  - I am reimplementing Andrew Ng’s deep learning exercises from scratch, ref the folder NNFromScratch.
+  - First milen stone achieved, ref [Notebook](NNFromScratch/np_nn_vs_lightning_nn.ipynb)
 <br><br>
 - MLIrisDataSet
   - This jupyter notebook uses the iris dataset for learning and practising typical ML algorithms of sample clustering and cataloguing
