@@ -91,6 +91,10 @@ def train_my_nn(x, y_true, my_nn_parameters):
 
     return L
 
+def my_nn_predict(x, my_nn_parameters):
+    _, y_hat = my_nn_forwards(x, my_nn_parameters)
+    return y_hat
+
 def test_my_nn_step1():
     # check output dimension of dense and output layer
     # generate datasets
