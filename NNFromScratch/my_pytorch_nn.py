@@ -19,15 +19,14 @@ class My_Ref_ML_NN(L.LightningModule):
     """
     A sub cloass of LightningModule.
     """
-    def __init__(self,  in_features, parameters_init):
+    def __init__(self,  in_features, parameters_init, optimizer_method):
         super().__init__()
         self.layer1 = nn.Linear(in_features, 8)
         self.layer2 = nn.Linear(8, 4)
         self.output = nn.Linear(4, 1)
-
         self.loss_fn = nn.BCELoss()
-
         self._init_weights(parameters_init)
+        self.optimizer_method = optimizer_method
 
 
     def _init_weights(self, parameters_init):
@@ -63,17 +62,22 @@ class My_Ref_ML_NN(L.LightningModule):
         """
         ref the parent method
         """
-        optimizer = torch.optim.SGD(self.parameters(), lr=1e-2)
+        if self.optimizer_method == "adam":
+            optimizer = torch.optim.Adam(self.parameters(), lr=1e-2, betas=(0.9, 0.999), eps=1e-08)
+        elif self.optimizer_method == "sgd":
+            optimizer = torch.optim.SGD(self.parameters(), lr=1e-2)
+        else:
+            raise NotImplementedError
         return optimizer
 
-def train_my_ref_nn(x,y, epochs, init_parameters):
+def train_my_ref_nn(x,y, epochs, init_parameters, optimizer_method = 'sgd'):
     x_torch = torch.from_numpy(x).float()
     y_torch = torch.from_numpy(y).float()
 
     dataset = TensorDataset(x_torch, y_torch)
     loader = DataLoader(dataset, batch_size = 100, shuffle = False)
 
-    ref_model = My_Ref_ML_NN(x.shape[1], init_parameters)
+    ref_model = My_Ref_ML_NN(x.shape[1], init_parameters, optimizer_method)
     loss_recorder = My_Loss_Recorder()
 
     trainer = L.Trainer(max_epochs = epochs,
