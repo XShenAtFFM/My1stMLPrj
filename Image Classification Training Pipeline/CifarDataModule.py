@@ -1,0 +1,70 @@
+import lightning as L
+
+from torchvision.datasets import CIFAR10
+from torchvision import transforms
+from torch.utils.data import DataLoader, random_split
+
+L.seed_everything(42)
+
+class CifarDataModule(L.LightningDataModule):
+    def __init__(self, root_path = './cifar-10-batches-py/'):
+        super().__init__()
+        self.root_path = root_path
+        self._test_dataset = None
+        self._train_dataset = None
+        self._val_dataset = None
+        self.train_transform = transforms.Compose([
+            transforms.RandomCrop(32, padding=4),  # data augmentation
+            transforms.RandomHorizontalFlip(),  # data augmentation
+            transforms.ToTensor(),  # convert to float32 [0,1]
+            transforms.Normalize(mean=[0.4914, 0.4822, 0.4465],
+                                 std=[0.2470, 0.2435, 0.2616])  # manual or calculated
+        ])
+
+        self.test_transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.4914, 0.4822, 0.4465],
+                                 std=[0.2470, 0.2435, 0.2616])
+        ])
+
+    def setup(self, stage: str = None):
+        full_train_dataset  = CIFAR10(root="./data", train = True, download= True, transform= self.train_transform)
+        full_val_dataset = CIFAR10(root="./data", train=True, download=True, transform=self.test_transform)
+
+        n = len(full_train_dataset)
+        train_size = int(0.95 * n)
+        val_size = n - train_size
+
+        # split both sources so transforms are correct
+        self._train_dataset, _ = random_split(full_train_dataset, [train_size, val_size])
+        _, self._val_dataset = random_split(full_val_dataset, [train_size, val_size])
+
+        self._test_dataset = CIFAR10(root="./data", train = False, download= True, transform= self.test_transform)
+
+    def train_dataloader(self):
+        return DataLoader(
+            self._train_dataset,
+            batch_size = 64,
+            num_workers = 0,
+            shuffle = True,
+        )
+
+    def test_dataloader(self):
+        return DataLoader(
+            self._test_dataset,
+            num_workers = 0,
+            batch_size = 64,
+            shuffle = False,
+        )
+
+    def val_dataloader(self):
+        return DataLoader(
+            self._val_dataset,
+            num_workers = 0,
+            batch_size = 64,
+            shuffle = False,
+        )
+
+
+
+
