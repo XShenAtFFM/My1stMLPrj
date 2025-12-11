@@ -90,8 +90,10 @@ class CifarNNML(L.LightningModule):
         x, y = batch
         x_hat = self(x)
 
+        loss = self.loss_fn(x_hat, y)
         acc = self.val_acc(x_hat, y)
-        self.log("val_acc", acc, prog_bar=True, on_epoch=True, on_step=False)
+        self.log("val_loss", loss)
+        self.log("val_acc", acc, on_epoch=True, on_step=False)
 
     def test_step(self, batch, batch_idx):
         x, y = batch

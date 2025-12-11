@@ -1,8 +1,11 @@
-import lightning as L
+import copy
+import random
 
+import lightning as L
 from torchvision.datasets import CIFAR10
 from torchvision import transforms
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader, random_split, Subset
+
 
 L.seed_everything(42)
 
@@ -28,16 +31,19 @@ class CifarDataModule(L.LightningDataModule):
         ])
 
     def setup(self, stage: str = None):
-        full_train_dataset  = CIFAR10(root="./data", train = True, download= True, transform= self.train_transform)
-        full_val_dataset = CIFAR10(root="./data", train=True, download=True, transform=self.test_transform)
-
+        full_train_dataset  = CIFAR10(root="./data", train = True, download = True, transform = None )
+        # try to split the train dataset to train and val dataset
         n = len(full_train_dataset)
-        train_size = int(0.95 * n)
-        val_size = n - train_size
+        picked = random.sample(range(n), int(n * 0.95))
+        picked_complement = [i for i in range(n) if i not in set(picked)]
 
         # split both sources so transforms are correct
-        self._train_dataset, _ = random_split(full_train_dataset, [train_size, val_size])
-        _, self._val_dataset = random_split(full_val_dataset, [train_size, val_size])
+        self._train_dataset = Subset(full_train_dataset, picked)
+        val_dataset = copy.copy(full_train_dataset)
+        self._val_dataset =  Subset(val_dataset, picked_complement)
+
+        self._train_dataset.dataset.transform = self.train_transform
+        self._val_dataset.dataset.transform = self.test_transform
 
         self._test_dataset = CIFAR10(root="./data", train = False, download= True, transform= self.test_transform)
 
