@@ -9,9 +9,15 @@
   - [x] Implementing a neural network built from scratch with NumPy 
   - [x] Comparing the same network implemented with PyTorch, ref [Notebook](NNFromScratch/np_nn_vs_lightning_nn.ipynb)
   - [x] Implementing a cnn network with modern technic, like residual connection in Pytorch for image classification
-  - Train and evaluate the model with Cifar-10 datasets, ref [Notebook](Image%20Classification%20Training%20Pipeline/EvaluationNotebook.ipynb)
+  - [x] Train and evaluate the model with Cifar-10 datasets, ref [Notebook](Image%20Classification%20Training%20Pipeline/EvaluationNotebook.ipynb)
     - Facing/Solving overshooting/variance problem (accuracy of train, eval, test datasets: [**0.99**, 0.8852, 0.8827]) 
-	![My CNN Model for Cifar10 Classification](./Image%20Classification%20Training%20Pipeline/MyCifar10NN.png)
+      - Solved, accuracy of train, eval, test datasets: [0.91, 0.89, 0.88]), by 
+        1. reducing the number of dense layers and units, 
+        2. adding an additional dropout in dense layer
+        3. adding additional augmentations, RandomRotation, ColorJitter
+      
+    ![y CNN Model for Cifar10 Classification](./Image%20Classification%20Training%20Pipeline/MyCifar10NN.png)
+  - Comparing my neural network model with Resnet-18
 ### **3 MLIrisDataSet**
   - This jupyter notebook uses the iris dataset for learning and practising typical ML algorithms of sample clustering and cataloguing
   - 1. Decision Tree with entropy measure

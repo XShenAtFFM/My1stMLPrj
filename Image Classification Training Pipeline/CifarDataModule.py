@@ -19,7 +19,9 @@ class CifarDataModule(L.LightningDataModule):
         self.train_transform = transforms.Compose([
             transforms.RandomCrop(32, padding=4),  # data augmentation
             transforms.RandomHorizontalFlip(),  # data augmentation
-            transforms.ToTensor(),  # convert to float32 [0,1]
+            transforms.RandomRotation(15),
+            transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),
+            transforms.ToTensor(),
             transforms.Normalize(mean=[0.4914, 0.4822, 0.4465],
                                  std=[0.2470, 0.2435, 0.2616])  # manual or calculated
         ])

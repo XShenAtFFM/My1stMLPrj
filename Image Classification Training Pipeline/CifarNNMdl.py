@@ -53,14 +53,11 @@ class CifarNNML(L.LightningModule):
             torch.nn.MaxPool2d(self.std_pool_size, stride = 2))
 
         self.fully_connected = torch.nn.Sequential(
-            torch.nn.Linear(4096, 1024, bias = True),
+            torch.nn.Linear(4096, 256, bias = True),
             torch.nn.ReLU(),
-            torch.nn.Linear(1024, 256, bias = True),
-            torch.nn.ReLU(),
-            torch.nn.Linear(256, 64, bias=True),
-            torch.nn.ReLU())
+            torch.nn.Dropout(p=0.5))
 
-        self.output = torch.nn.Linear(64, 10, bias = True)
+        self.output = torch.nn.Linear(256, 10, bias = True)
 
     def forward(self, x):
         x1 = self.block_1_0(x)
