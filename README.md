@@ -6,18 +6,38 @@
 
 
 ### **2 Current Work: Deeply understand the deep learning core concept**
-  - [x] Implementing a neural network built from scratch with NumPy 
-  - [x] Comparing the same network implemented with PyTorch, ref [Notebook](NNFromScratch/np_nn_vs_lightning_nn.ipynb)
-  - [x] Implementing a cnn network with modern technic, like residual connection in Pytorch for image classification
-  - [x] Train and evaluate the model with Cifar-10 datasets, ref [Notebook](Image%20Classification%20Training%20Pipeline/EvaluationNotebook.ipynb)
-    - Facing/Solving overshooting/variance problem (accuracy of train, eval, test datasets: [**0.99**, 0.8852, 0.8827]) 
-      - Solved, accuracy of train, eval, test datasets: [0.91, 0.89, 0.88]), by 
-        1. reducing the number of dense layers and units, 
-        2. adding an additional dropout in dense layer
-        3. adding additional augmentations, RandomRotation, ColorJitter
-      
-    ![y CNN Model for Cifar10 Classification](./Image%20Classification%20Training%20Pipeline/MyCifar10NN.png)
-  - Comparing my neural network model with Resnet-18
+#### Neural Network from Scratch (NumPy)
+- Implemented a **neural network from scratch using NumPy**.  
+- Compared the same network implemented in **PyTorch Lightning**, ref [Notebook](NNFromScratch/np_nn_vs_lightning_nn.ipynb).
+
+**Learned and applied:**
+- Core principles of **forward and backward propagation**  
+  - Implementation of **SGD and Adam optimizers**  
+  - Understanding of **loss functions** and **gradient computation**  
+  - Ability to **debug and verify neural network behavior** by comparison with PyTorch  
+---
+#### Convolutional Neural Network (PyTorch Lightning)
+- Built a **CNN with modern techniques** for image classification, including **residual connections** and **batch normalization**.  
+- **Trained and evaluated the CNN on CIFAR-10**, ref [Notebook](Image%20Classification%20Training%20Pipeline/EvaluationNotebook.ipynb).  
+
+- **Overshooting / high variance problem:**
+  - Initial accuracy (Train / Eval / Test): **0.99, 0.8852, 0.8827**  
+  - Problem solved by:  
+    1. Reducing the number of dense layers and units  
+    2. Adding additional **dropout** in dense layers  
+    3. Introducing more **data augmentations** (RandomRotation, ColorJitter)  
+  - Final accuracy (Train / Eval / Test): **0.91, 0.89, 0.88**  
+![y CNN Model for Cifar10 Classification](./Image%20Classification%20Training%20Pipeline/MyCifar10NN.png)
+
+- Compared my CNN with **ResNet-18** trained on the same dataset:  
+  - Accuracy (Train / Eval / Test): **0.985, 0.927, 0.919**  
+
+**Learned and applied:**
+- Modern CNN architectures (**Residual Connections**, **BatchNorm**)  
+  - Data augmentation and regularization techniques to reduce overfitting  
+  - Training strategies like **learning rate scheduling** and **early stopping**  
+  - Model evaluation and performance comparison with standard architectures  
+
 ### **3 MLIrisDataSet**
   - This jupyter notebook uses the iris dataset for learning and practising typical ML algorithms of sample clustering and cataloguing
   - 1. Decision Tree with entropy measure

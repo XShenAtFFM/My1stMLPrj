@@ -1,26 +1,39 @@
 import lightning as L
 import torch
 from torchmetrics import Accuracy
-from tensorflow.python.keras.legacy_tf_layers.core import fully_connected
+from torchvision.models import resnet18
 
 
 class CifarNNML(L.LightningModule):
-    def __init__(self, enable_batchnorm = True, enable_residual = True, std_filter_size = 3, std_pool_size = 2, optimize = 'adam', **kwargs):
+    def __init__(self, enable_batchnorm = True, enable_residual = True, std_filter_size = 3,
+                 std_pool_size = 2, optimize = 'adam', model_type = 'myown', **kwargs):
         super(CifarNNML, self).__init__()
         self.std_filter_size = 3
         self.std_pool_size = 2
         self.enable_batchnorm = enable_batchnorm
         self.enable_residual = enable_residual
         self.optimize = optimize
+        self.model_type = model_type
 
         self.train_acc = Accuracy(task="multiclass", num_classes=10)
         self.val_acc = Accuracy(task="multiclass", num_classes=10)
         self.test_acc = Accuracy(task="multiclass", num_classes=10)
 
         self.loss_fn = torch.nn.CrossEntropyLoss()
-        self._build_model()
 
-    def _build_model(self):
+        if self.model_type == 'myown':
+            self._my_nn_model()
+        else:
+            self._resnet()
+
+    def _resnet(self):
+        self._resnet18 = resnet18(num_classes=10)
+        self._resnet18.conv1 = torch.nn.Conv2d(
+            3, 64, kernel_size=3, stride=1, padding=1, bias=False
+        )
+        self._resnet18.maxpool = torch.nn.Identity()
+
+    def _my_nn_model(self):
         # block_1_0 2 times convolution with batch normalization, at the end no relu because of switchable residual connection
         self.block_1_0 = torch.nn.Sequential(
             torch.nn.Conv2d(3, 32, self.std_filter_size, 1, padding = 'same', bias = True),
@@ -60,6 +73,12 @@ class CifarNNML(L.LightningModule):
         self.output = torch.nn.Linear(256, 10, bias = True)
 
     def forward(self, x):
+        if self.model_type == 'myown':
+            return self._my_nn_forward(x)
+        else:
+            return self._resnet_forward(x)
+
+    def _my_nn_forward(self, x):
         x1 = self.block_1_0(x)
         if self.enable_residual:
             x1 = x1 + self.block_1_1(x)
@@ -73,14 +92,17 @@ class CifarNNML(L.LightningModule):
         output = self.output(x3)
         return output
 
+    def _resnet_forward(self, x):
+        return self._resnet18(x)
+
     def training_step(self, batch, batch_idx):
         x, y = batch
         x_hat = self(x)
         loss = self.loss_fn(x_hat, y)
-        acc = self.train_acc(x_hat, y)
+        self.train_acc(x_hat, y)
 
         self.log("train_loss", loss )
-        self.log("train_acc", acc, on_epoch=True, on_step=False)
+        self.log("train_acc", self.train_acc, on_epoch=True, on_step=False)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -88,16 +110,16 @@ class CifarNNML(L.LightningModule):
         x_hat = self(x)
 
         loss = self.loss_fn(x_hat, y)
-        acc = self.val_acc(x_hat, y)
+        self.val_acc(x_hat, y)
         self.log("val_loss", loss)
-        self.log("val_acc", acc, on_epoch=True, on_step=False)
+        self.log("val_acc", self.val_acc, on_epoch=True, on_step=False)
 
     def test_step(self, batch, batch_idx):
         x, y = batch
         x_hat = self(x)
 
-        acc = self.test_acc(x_hat, y)
-        self.log("test_acc", acc, prog_bar=True, on_epoch=True, on_step=False)
+        self.test_acc(x_hat, y)
+        self.log("test_acc", self.test_acc, prog_bar=True, on_epoch=True, on_step=False)
 
     def predict_step(self, batch, batch_idx):
         x, y = batch
@@ -110,10 +132,17 @@ class CifarNNML(L.LightningModule):
         """
         ref the parent method
         """
-        if self.optimize == 'adam':
-             optimizer = torch.optim.Adam(self.parameters(), lr = 3e-4, betas=(0.9, 0.999), eps=1e-08, weight_decay = 1e-4)
+        if self.model_type == 'resnet':
+            optimizer = torch.optim.SGD(
+                self.parameters(), lr=0.1, momentum=0.9, weight_decay=5e-4
+            )
         else:
-            optimizer = torch.optim.SGD(self.parameters(), lr = 0.01, momentum = 0.9, weight_decay = 5e-4)
+            optimizer = torch.optim.Adam(
+                self.parameters(), lr=3e-4, weight_decay=1e-4
+            )
 
-        lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=300)
-        return {"optimizer": optimizer, "lr_scheduler": lr_scheduler}
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+            optimizer, T_max = 300
+        )
+
+        return {"optimizer": optimizer, "lr_scheduler": scheduler}

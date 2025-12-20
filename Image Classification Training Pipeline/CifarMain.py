@@ -10,7 +10,7 @@ if __name__ == "__main__":
     # create datamodule
     cifar_data = CifarDataModule.CifarDataModule()
     # create nn model
-    cifar_nn = CifarNNMdl.CifarNNML()
+    cifar_nn = CifarNNMdl.CifarNNML(model_type = 'ResNet18')
 
     # Checkpoint callback
     checkpoint_callback = L.pytorch.callbacks.ModelCheckpoint(
