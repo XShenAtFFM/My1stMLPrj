@@ -5,6 +5,17 @@ from torch.utils.data import Dataset,Subset, TensorDataset, DataLoader, RandomSa
 from SideSlipAgWiPytorch.VehMeasurdData import VehMeasurdData
 
 def collate_fn_pad(batch):
+    """
+    This function is currently unused. Because the batch consists of only 1 sequence.
+
+    Note: This function is be called after collate_fn is called. It takes the datasets of the batch created by the dataloader and
+    pad the sequences accordingly in order that all sequences in the batch match the max length in that batch.
+    Because DataLoader builds a batch as a single tensor. A tensor requires a rectangular shape.
+    Pad would be sufficient for a batch of sequences. pack_padded_sequence is required by LSTM
+
+    :param batch:
+    :return: batched feature and label tensors
+    """
     lengths = torch.tensor([t[0].shape[0] for t in batch])
     feature_batch = [t[0] for t in batch]
     label_batch = [t[1] for t in batch]
@@ -22,6 +33,14 @@ class DataModule(L.LightningDataModule):
     """
     The DataModule is sub class of the lightning. LightningDataModule.
     It encapsulates training, validation, testing, and prediction dataloaders
+
+    Note: Decision of the batch size for train_dataloader and validation_dataloader.
+    I have a couple of vehicle measurements. In engineer world, these called time series data.
+    In the sequence model world a time series data is a sequence.
+    A batch consists of only 1 sequence. Because the sequences are independent of each other. If a batch has more than
+    one sequence. It has to be connected together. In LSTM layer the first sequence “runs into” the 2nd sequence.
+    There are some work around, but it requires a lot of effort or computing power.
+
     :attributes:
         _data_set: instance of VehMeasurdData, pointing to all found measurements
 
@@ -72,40 +91,44 @@ class DataModule(L.LightningDataModule):
 
     def train_dataloader(self):
         sp = RandomSampler(self._train_dataset)
-        bs = BatchSampler(sampler = sp, batch_size = 2, drop_last = False)
+        bs = BatchSampler(sampler = sp, batch_size = 1, drop_last = False)
         return DataLoader(
             self._train_dataset,
-            collate_fn = collate_fn_pad,
+            num_workers=0,
+            #collate_fn = collate_fn_pad,
             batch_sampler= bs,
             shuffle = False,
         )
 
     def val_dataloader(self):
         sp = SequentialSampler(self._val_dataset)
-        bs = BatchSampler(sampler = sp, batch_size = 10000, drop_last = False)
+        bs = BatchSampler(sampler = sp, batch_size = 1, drop_last = False)
         return DataLoader(
             self._val_dataset,
-            collate_fn = collate_fn_pad,
+            num_workers = 0,
+            #collate_fn = collate_fn_pad,
             batch_sampler = bs,
             shuffle = False,
         )
 
     def test_dataloader(self):
         sp = SequentialSampler(self._dataset)
-        bs = BatchSampler(sampler = sp, batch_size = 1000, drop_last = False)
+        bs = BatchSampler(sampler = sp, batch_size = 1, drop_last = False)
         return DataLoader(
             self._dataset,
-            collate_fn = collate_fn_pad,
+            num_workers=1,
+            #collate_fn = collate_fn_pad,
             batch_sampler = bs,
             shuffle = False,
         )
 
     def predict_dataloader(self):
         sp = SequentialSampler(self._dataset)
-        bs = BatchSampler(sampler = sp, batch_size = 1000, drop_last = False)
+        bs = BatchSampler(sampler = sp, batch_size = 1, drop_last = False)
         return DataLoader(
             self._dataset,
-            collate_fn = collate_fn_pad,
+            num_workers=1,
+            #collate_fn = collate_fn_pad,
             batch_sampler = bs,
             shuffle = False,
         )

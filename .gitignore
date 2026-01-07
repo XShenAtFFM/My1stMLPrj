@@ -14,3 +14,9 @@ __pycache__/*
 nocommit/*
 NN4VehicleStateClustering/vehicle_drinving_measurement.csv
 */**/_standardizParam.json
+
+Image Classification Training Pipeline/checkpoints**
+Image Classification Training Pipeline/cifar_log/*
+Image Classification Training Pipeline/cifar-10-batches-py/*
+
+SideSlipAgWiPytorch/**
