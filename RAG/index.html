@@ -1,10 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>RAG Chat</title>
 </head>
 <body>
-$END$
+
+<h2>Ask your RAG</h2>
+
+<input type="text" id="question" placeholder="Type your question..." size="50">
+<button onclick="sendQuery()">Ask</button>
+
+<p><strong>Answer:</strong></p>
+<p id="answer"></p>
+
+<script>
+async function sendQuery() {
+    document.getElementById("answer").innerText = "thinking ..."
+    const question = document.getElementById("question").value;
+
+    const response = await fetch("http://127.0.0.1:8000/query", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ query: question })
+    });
+
+    const data = await response.json();
+    console.log(data);
+    document.getElementById("answer").innerText = data.answer;
+}
+</script>
+
 </body>
 </html>

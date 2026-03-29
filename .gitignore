@@ -1,22 +1,57 @@
-# work folder
-__pycache__/*
+# ====================================================================
+# 1. SYSTEM & GLOBAL JUNK
+# ====================================================================
 .DS_Store
-*/**/dataset/*
+.env
+.idea/
+.bash_profile
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ====================================================================
+# 2. THE "PRODUCTIVE CODE ONLY" LOGIC (Recursive)
+# ====================================================================
+# Ignore everything inside any subdirectory by default
+*/*
+
+# Allow back the directories themselves (so Git can look inside)
+!*/
+!**/
+
+# Allow back ONLY your productive source/config files
+!**/*.py
+!**/*.ipynb
+!**/*.yaml
+!**/*.json
+!**/*.toml
+!**/README.md
+
+# ====================================================================
+# 3. OVERRIDE: ABSOLUTE IGNORES (Last Word Wins)
+# ====================================================================
+# These stay ignored even if they contain a .py or .yaml file inside.
+**/lightning_logs/
+**/cifar_log/
+**/*_logs/
 **/.ipynb_checkpoints/
-*/**/*.keras
-*/**/*.png
-*/**/expedia_train.csv
-*/**/*.mf4
-*/***.log
-.idea/**
-*/**/lightning_logs/*
-*/**/*pycache*/*
-nocommit/*
-NN4VehicleStateClustering/vehicle_drinving_measurement.csv
-*/**/_standardizParam.json
+**/mlruns/
+**/outputs/
+Image Classification Training Pipeline/cifar-10-batches-py/
+RAG/chunks/
+RAG/documents/
+NoCommit/
+SelfTeaching/CNN/dataset/
+SelfTeaching/SideSlipAgWiPytorch/DataSets/
+.idea/
+TransferLearning/cifar-10-batches-py/
+TransferLearning/resnettransfer_log/
+TransformerFromScratch/tinyshakespeare_log/
+SelfTeaching/SideSlipAgWiPytorch/checkpoints/
 
-Image Classification Training Pipeline/checkpoints**
-Image Classification Training Pipeline/cifar_log/*
-Image Classification Training Pipeline/cifar-10-batches-py/*
 
-SideSlipAgWiPytorch/**
+# Large Model Files & Checkpoints
+*.ckpt
+*.pt
+*.pth
+*.onnx
